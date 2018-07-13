@@ -4,17 +4,35 @@
 namespace Eniams\BranchLoader;
 
 
+/**
+ * Class GitManager
+ * @package Eniams\BranchLoader
+ */
 class GitManager
 {
+    /**
+     * @var GitCacheLoader
+     */
     private $cacheLoader;
+    /**
+     * @var GitLoader
+     */
     private $gitLoader;
 
+    /**
+     * GitManager constructor.
+     * @param GitCacheLoader $cacheLoader
+     * @param GitLoader $gitLoader
+     */
     public function __construct(GitCacheLoader $cacheLoader, GitLoader $gitLoader)
     {
         $this->cacheLoader = $cacheLoader;
         $this->gitLoader = $gitLoader;
     }
 
+    /**
+     * @return string
+     */
     public function findCurrentBranch()
     {
         if($this->cacheLoader->branchCacheIsValid()) {
@@ -27,6 +45,9 @@ class GitManager
         return $branchName;
     }
 
+    /**
+     * @return string
+     */
     public function findLastCommitMessage()
     {
         if($this->cacheLoader->lastCommitMessageCacheIsValid()) {
@@ -39,6 +60,10 @@ class GitManager
         return $message;
     }
 
+    /**
+     * @return array
+     * @throws InvalidUrlException
+     */
     public function findLastCommitDetail()
     {
         if($this->cacheLoader->gitLogsCacheIsValid()) {
@@ -51,6 +76,10 @@ class GitManager
         return $message;
     }
 
+    /**
+     * @return array|null
+     * @throws InvalidUrlException
+     */
     public function findLogs()
     {
         if($this->cacheLoader->gitLogsCacheIsValid()) {
@@ -63,6 +92,10 @@ class GitManager
         return $logs;
     }
 
+    /**
+     * @return string
+     * @throws InvalidUrlException
+     */
     public function findUrlRepository()
     {
         if($this->cacheLoader->gitUrlCacheIsValid()) {
