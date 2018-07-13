@@ -1,12 +1,18 @@
 <?php
 
 
-namespace Eniams\BranchLoader;
+namespace Eniams\BranchLoader\Manager;
+
+use Eniams\BranchLoader\Cache\GitCacheLoader;
+use Eniams\BranchLoader\GitLoader;
 
 
 /**
- * Class GitManager
+ * Class GitManager Responsible to retrieve Git information from cache or application
+ *
  * @package Eniams\BranchLoader
+ *
+ * @author Smaine Milianni <contact@smaine.me>
  */
 class GitManager
 {
@@ -31,9 +37,9 @@ class GitManager
     }
 
     /**
-     * @return string
+     * @return string Retrieve Current Branch
      */
-    public function findCurrentBranch()
+    public function findCurrentBranch(): string
     {
         if($this->cacheLoader->branchCacheIsValid()) {
             return $this->cacheLoader->getBranchName();
@@ -46,12 +52,12 @@ class GitManager
     }
 
     /**
-     * @return string
+     * @return string Retrieve last commit message
      */
-    public function findLastCommitMessage()
+    public function findLastCommitMessage(): string
     {
         if($this->cacheLoader->lastCommitMessageCacheIsValid()) {
-            //return $this->cacheLoader->getLastCommitMessage();
+            return $this->cacheLoader->getLastCommitMessage();
         }
 
         $message = $this->gitLoader->getLastCommitMessage();
@@ -61,7 +67,8 @@ class GitManager
     }
 
     /**
-     * @return array
+     * @return array Retrieve details of the last commit
+     *
      * @throws InvalidUrlException
      */
     public function findLastCommitDetail()
@@ -77,13 +84,14 @@ class GitManager
     }
 
     /**
-     * @return array|null
+     * @return array|null Retrieve Git details
+     *
      * @throws InvalidUrlException
      */
     public function findLogs()
     {
         if($this->cacheLoader->gitLogsCacheIsValid()) {
-            //  return $this->cacheLoader->getLogsFromCache();
+            return $this->cacheLoader->getLogsFromCache();
         }
 
         $logs = $this->gitLoader->getLogs();
@@ -93,7 +101,8 @@ class GitManager
     }
 
     /**
-     * @return string
+     * @return string Retrieve the url of the repository
+     *
      * @throws InvalidUrlException
      */
     public function findUrlRepository()
