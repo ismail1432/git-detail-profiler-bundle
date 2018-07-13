@@ -10,26 +10,22 @@ namespace Eniams\BranchLoader;
  */
 class GitLoader
 {
-    const COMMIT_EDIT_MESSAGE = '/.git/COMMIT_EDITMSG';
-    const CONFIG_FILE = '/.git/config';
-    const GIT_LOG_FILE = '/.git/logs/HEAD';
-    const HEAD = '/.git/HEAD';
     const NO_BRANCH = 'no branch name';
 
-    private $commitEditMsg;
+    private $commitEditMessage;
     private $configFile;
     private $gitLogFile;
     private $headFile;
 
     /**
-     * @param string $projectDir The project root dir
+     * @param GitFilePath $filePath
      */
-    public function __construct($projectDir)
+    public function __construct(GitFilePath $filePath)
     {
-        $this->commitEditMsg = $projectDir.self::COMMIT_EDIT_MESSAGE;
-        $this->configFile =$projectDir.self::CONFIG_FILE;
-        $this->gitLogFile = $projectDir.self::GIT_LOG_FILE;
-        $this->headFile = $projectDir.self::HEAD;
+        $this->headFile = $filePath->getHeadPathFile();
+        $this->configFile = $filePath->getConfigPathFile();
+        $this->commitEditMessage = $filePath->getCommitEditMessagePathFile();
+        $this->gitLogFile = $filePath->getGitLogPathFile();
     }
 
     /**
@@ -63,7 +59,7 @@ class GitLoader
      */
     public function getLastCommitMessage(): string
     {
-        $commitMessage = file_exists($this->commitEditMsg) ? file($this->commitEditMsg, FILE_USE_INCLUDE_PATH) : "";
+        $commitMessage = file_exists($this->commitEditMessage) ? file($this->commitEditMessage, FILE_USE_INCLUDE_PATH) : "";
 
         return \is_array($commitMessage) ? trim($commitMessage[0]) : "";
     }

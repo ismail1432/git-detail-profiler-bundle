@@ -3,6 +3,8 @@
 
 namespace Eniams\BranchLoader\Cache;
 
+use Eniams\BranchLoader\GitFilePath;
+use Eniams\BranchLoader\InvalidUrlException;
 use Psr\SimpleCache\CacheInterface;
 
 
@@ -15,10 +17,6 @@ use Psr\SimpleCache\CacheInterface;
  */
 class GitCacheLoader
 {
-    const HEAD = '/.git/HEAD';
-    const COMMIT_EDIT_MESSAGE = '/.git/COMMIT_EDITMSG';
-    const CONFIG_FILE = '/.git/config';
-    const GIT_LOG_FILE = '/.git/logs/HEAD';
 
     private $cache;
     private $headFile;
@@ -30,21 +28,23 @@ class GitCacheLoader
     /**
      * GitCacheLoader constructor.
      * @param CacheInterface $cache
-     * @param $projectDir Project root dir
+     * @param GitFilePath $filePath
      */
-    public function __construct(CacheInterface $cache, $projectDir)
+    public function __construct(CacheInterface $cache, GitFilePath $filePath)
     {
         $this->cache = $cache;
-        $this->headFile = $projectDir.self::HEAD;
-        $this->configFile =$projectDir.self::CONFIG_FILE;
-        $this->commitEditMessage = $projectDir.self::COMMIT_EDIT_MESSAGE;
-        $this->gitLogFile = $projectDir.self::GIT_LOG_FILE;
+        $this->headFile = $filePath->getHeadPathFile();
+        $this->configFile = $filePath->getConfigPathFile();
+        $this->commitEditMessage = $filePath->getCommitEditMessagePathFile();
+        $this->gitLogFile = $filePath->getGitLogPathFile();
     }
 
     /**
-     * @return string
+     * @return string|null
+     *
+     * @throws InvalidUrlException
      */
-    public function getBranchName(): string
+    public function getBranchName(): ?string
     {
         return $this->cache->get('git.branch_name');
     }
@@ -75,9 +75,9 @@ class GitCacheLoader
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLastCommitMessage(): string
+    public function getLastCommitMessage(): ?string
     {
         return $this->cache->get('git.last_commit_message');
 
@@ -93,9 +93,9 @@ class GitCacheLoader
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getLastCommitDetail(): array
+    public function getLastCommitDetail(): ?array
     {
         return $this->cache->get('git.last_commit_detail');
 
@@ -120,9 +120,9 @@ class GitCacheLoader
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getLogsFromCache(): array
+    public function getLogsFromCache(): ?array
     {
         return $this->cache->get('git.logs');
     }
@@ -153,9 +153,9 @@ class GitCacheLoader
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrlFromCache(): string
+    public function getUrlFromCache(): ?string
     {
         return $this->cache->get('git.url_repository');
     }

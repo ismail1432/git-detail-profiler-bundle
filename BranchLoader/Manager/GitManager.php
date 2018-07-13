@@ -5,6 +5,7 @@ namespace Eniams\BranchLoader\Manager;
 
 use Eniams\BranchLoader\Cache\GitCacheLoader;
 use Eniams\BranchLoader\GitLoader;
+use Eniams\BranchLoader\InvalidUrlException;
 
 
 /**
@@ -38,6 +39,8 @@ class GitManager
 
     /**
      * @return string Retrieve Current Branch
+     *
+     * @throws InvalidUrlException
      */
     public function findCurrentBranch(): string
     {
