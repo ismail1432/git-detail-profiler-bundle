@@ -3,8 +3,9 @@
 
 namespace Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache;
 
-use Eniams\BranchLoader\GitFilePath;
-use Eniams\BranchLoader\InvalidUrlException;
+
+use Eniams\Bundle\GitProfilerBundle\BranchLoader\GitFilePath;
+use Eniams\Bundle\GitProfilerBundle\BranchLoader\InvalidUrlException;
 use Psr\SimpleCache\CacheInterface;
 
 
