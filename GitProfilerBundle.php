@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Eniams;
+namespace Eniams\Bundle\GitProfilerBundle;
 
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;

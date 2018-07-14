@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Eniams\BranchLoader\Cache;
+namespace Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache;
 
 use Eniams\BranchLoader\GitFilePath;
 use Eniams\BranchLoader\InvalidUrlException;

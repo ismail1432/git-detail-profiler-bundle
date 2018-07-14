@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Eniams\BranchLoader;
+namespace Eniams\Bundle\GitProfilerBundle\BranchLoader;
 
 
 /**
