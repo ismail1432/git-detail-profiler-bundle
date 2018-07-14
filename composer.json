@@ -31,7 +31,7 @@
     "symfony/var-dumper": "<3.4"
   },
   "autoload": {
-    "psr-4": { "Symfony\\Bundle\\GitProfilerBundle\\": "" },
+    "psr-4": { "Eniams\\GitProfilerBundle\\": "" },
     "exclude-from-classmap": [
       "/Tests/"
     ]
