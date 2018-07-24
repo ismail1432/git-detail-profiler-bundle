@@ -1,22 +1,39 @@
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: false       # Allows optimizing the container by removing unused services; this also means
-                            # fetching services directly from the container via $container->get() won't work.
-                            # The best practice is to be explicit about your dependencies anyway.
-    Eniams\BranchLoader\GitFilePath:
-        arguments:
-            ['%kernel.project_dir%']
+        autowire: true
+        autoconfigure: true
+        public: false
 
-    Eniams\Bundle\DataCollector\GitDataCollector:
-            tags:
-                -
-                    name:     data_collector
-                    template: '@GitProfilerBundle/data_collector/git_data.html.twig'
-                        # must match the value returned by the getName() method
-                    id: 'eniams.git_data_collector'
-                        # optional priority
-                        # priority: 300
-            public: false
+    Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache\GitCacheLoader: '@eniams.branchloader.git_cache_loader'
+    Eniams\Bundle\GitProfilerBundle\BranchLoader\GitFilePath: '@eniams.branchloader.git_file_path'
+    Eniams\Bundle\GitProfilerBundle\BranchLoader\GitLoader:  '@eniams.branchloader.git_loader'
+    Eniams\Bundle\GitProfilerBundle\BranchLoader\Manager\GitManager: '@eniams.branchloader.git_manager'
+
+    eniams.branchloader.git_file_path:
+        class: Eniams\Bundle\GitProfilerBundle\BranchLoader\GitFilePath
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    eniams.branchloader.git_cache_loader:
+        class: Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache\GitCacheLoader
+        arguments:
+            - '@cache.app.simple'
+            - '@eniams.branchloader.git_file_path'
+
+    eniams.branchloader.git_loader:
+        class: Eniams\Bundle\GitProfilerBundle\BranchLoader\GitLoader
+        arguments:
+            - '@eniams.branchloader.git_file_path'
+
+    eniams.branchloader.git_manager:
+        class: Eniams\Bundle\GitProfilerBundle\BranchLoader\Manager\GitManager
+        arguments:
+            - '@eniams.branchloader.git_cache_loader'
+            - '@eniams.branchloader.git_loader'
+
+    Eniams\Bundle\GitProfilerBundle\DataCollector\GitDataCollector:
+        arguments:
+            - '@eniams.branchloader.git_cache_loader'
+            - '@eniams.branchloader.git_manager'
+        tags:
+            - { name: data_collector, template: '@GitProfiler/Collector/git_profiler.html.twig', id: 'eniams.git_data_collector' }

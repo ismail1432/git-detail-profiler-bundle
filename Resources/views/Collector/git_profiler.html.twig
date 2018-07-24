@@ -59,23 +59,5 @@
 {% endblock %}
 
 {% block panel %}
-    <h2><a href="{{ collector.urlRepository }}" target="_blank">Access to the repository</a> </h2>
-    <h2>Git Informations</h2>
-    <table>
-        <tr>
-            <th>Sha</th>
-            <th>Author</th>
-            <th>Email</th>
-            <th>Date</th>
-        </tr>
-
-        {% for log in collector.logs %}
-            <tr>
-                <td><a href="{{ log.urlCommit }}">{{ log.sha }}</a> </td>
-                <td>{{ log.author }}</td>
-                <td><a href="mailto:{{ log.email }}">{{ log.email }}</a></td>
-                <td>{{ log.date }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+   {% include collector.RemoteTemplate %}
 {% endblock %}

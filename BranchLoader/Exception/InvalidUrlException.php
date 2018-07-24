@@ -1,6 +1,7 @@
 <?php
 
-namespace Eniams\Bundle\GitProfilerBundle\BranchLoader;
+namespace Eniams\Bundle\GitProfilerBundle\BranchLoader\Exception;
+
 /**
  * InvalidUrlException.
  *

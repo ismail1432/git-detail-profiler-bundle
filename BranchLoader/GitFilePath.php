@@ -3,7 +3,6 @@
 
 namespace Eniams\Bundle\GitProfilerBundle\BranchLoader;
 
-
 /**
  * Class GitFilePath Responsible to retrieve Git files path
  *
@@ -14,9 +13,9 @@ namespace Eniams\Bundle\GitProfilerBundle\BranchLoader;
 /**
  * Class GitFilePath
  *
- * @package Eniams\BranchLoader
+ * @package Eniams\Bundle\GitProfilerBundle\BranchLoader
  */
-final class GitFilePath
+class GitFilePath
 {
     const COMMIT_EDIT_MESSAGE = '/.git/COMMIT_EDITMSG';
     const CONFIG_FILE = '/.git/config';
@@ -30,7 +29,7 @@ final class GitFilePath
      *
      * @param $projectDir Project root directory
      */
-    public function __construct($projectDir)
+    public function __construct(string $projectDir)
     {
         $this->projectDir = $projectDir;
     }

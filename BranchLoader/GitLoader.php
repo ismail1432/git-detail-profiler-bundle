@@ -10,7 +10,10 @@ namespace Eniams\Bundle\GitProfilerBundle\BranchLoader;
  */
 class GitLoader
 {
-    const NO_BRANCH = 'no branch name';
+    const NO_BRANCH = 'There is no branch';
+    const NO_COMMIT = 'There is no commit';
+    const NOT_DEFINED = 'not defined';
+    const NO_REMOTE_REPO = 'There is no remote repository';
 
     private $commitEditMessage;
     private $configFile;
@@ -39,7 +42,7 @@ class GitLoader
         $branchname = self::NO_BRANCH;
         $stringFromFile = file_exists($this->headFile) ? file($this->headFile, FILE_USE_INCLUDE_PATH) : "";
 
-        if(isset($stringFromFile) && is_array($stringFromFile)) {
+        if (isset($stringFromFile) && is_array($stringFromFile)) {
             //get the string from the array
             $firstLine = $stringFromFile[0];
             //seperate out by the "/" in the string
@@ -59,9 +62,11 @@ class GitLoader
      */
     public function getLastCommitMessage(): string
     {
-        $commitMessage = file_exists($this->commitEditMessage) ? file($this->commitEditMessage, FILE_USE_INCLUDE_PATH) : "";
+        if (!file_exists($this->commitEditMessage)) {
+            return self::NO_COMMIT;
+        }
 
-        return \is_array($commitMessage) ? trim($commitMessage[0]) : "";
+        return trim(file($this->commitEditMessage, FILE_USE_INCLUDE_PATH)[0]);
     }
 
     /**
@@ -89,21 +94,25 @@ class GitLoader
     public function getLogs(): ?array
     {
         $logs = [];
+        $noRepo = true;
         $gitLogs = file_exists($this->gitLogFile) ? file($this->gitLogFile, FILE_USE_INCLUDE_PATH) : "";
 
-        if(is_string($gitLogs)) {
+        if (is_string($gitLogs)) {
             return null;
         }
 
-        $baseRepository = str_replace(".git", '', $this->getBaseUrlRepository());
+        if (self::NO_REMOTE_REPO !== $this->getBaseUrlRepository()) {
+            $noRepo = false;
+            $baseRepository = str_replace(".git", '', $this->getBaseUrlRepository());
+        }
 
         foreach ($gitLogs as $item => $value) {
             $logExploded = explode(' ', $value);
-            $logs[$item]['sha'] = $logExploded[1] ?? 'not defined';
-            $logs[$item]['author'] = $logExploded[2] ?? 'not defined';
-            $logs[$item]['email'] = preg_replace('#<|>#','',$logExploded[3]) ?? 'not defined';
-            $logs[$item]['date'] = isset($logExploded[4]) ? date('Y/m/d H:i', $logExploded[4]) : "not defined";
-            $logs[$item]['urlCommit'] = $baseRepository."/commit/".$logs[$item]['sha'];
+            $logs[$item]['sha'] = $logExploded[1] ?? self::NOT_DEFINED;
+            $logs[$item]['author'] = $logExploded[2] ?? self::NOT_DEFINED;
+            $logs[$item]['email'] = preg_replace('#<|>#', '', $logExploded[3]) ?? self::NOT_DEFINED;
+            $logs[$item]['date'] = isset($logExploded[4]) ? date('Y/m/d H:i', $logExploded[4]) : self::NOT_DEFINED;
+            $logs[$item]['urlCommit'] = !$noRepo ? $baseRepository . "/commit/" . $logs[$item]['sha'] : self::NO_REMOTE_REPO;
         }
 
         return $logs;
@@ -118,20 +127,24 @@ class GitLoader
      */
     public function getBaseUrlRepository(): string
     {
-        $fileContent = file_exists($this->configFile) ? file($this->configFile, FILE_USE_INCLUDE_PATH) : "";
-        if(!\is_array($fileContent)) {
+        $fileContent = file_exists($this->configFile) ? file($this->configFile, FILE_USE_INCLUDE_PATH) : self::NO_REMOTE_REPO;
+
+        if (!\is_array($fileContent)) {
             return $fileContent;
+        }
+
+        if (!isset($fileContent[6])) {
+            return self::NO_REMOTE_REPO;
         }
 
         $url = trim($fileContent[6]);
 
-        if(false !== $git = strpos($url, "https")) {
+        if (false !== $git = strpos($url, "https")) {
             return str_replace('url = ', '', $url);
         }
 
-        if(false !== strpos($url, "git@")) {
+        if (false !== strpos($url, "git@")) {
             $gitDomain = substr($url, 10, 10);
-
             return str_replace("url = git@$gitDomain:", "https://$gitDomain/", $url);
         }
 

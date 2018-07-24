@@ -1,12 +1,11 @@
 <?php
 
 
-namespace Eniams\BranchLoader\Manager;
+namespace Eniams\Bundle\GitProfilerBundle\BranchLoader\Manager;
 
-use Eniams\BranchLoader\Cache\GitCacheLoader;
-use Eniams\BranchLoader\GitLoader;
-use Eniams\BranchLoader\InvalidUrlException;
-
+use Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache\GitCacheLoader;
+use Eniams\Bundle\GitProfilerBundle\BranchLoader\GitLoader;
+use Eniams\Bundle\GitProfilerBundle\BranchLoader\Exception\InvalidUrlException;
 
 /**
  * Class GitManager Responsible to retrieve Git information from cache or application
@@ -44,7 +43,7 @@ class GitManager
      */
     public function findCurrentBranch(): string
     {
-        if($this->cacheLoader->branchCacheIsValid()) {
+        if ($this->cacheLoader->branchCacheIsValid()) {
             return $this->cacheLoader->getBranchName();
         }
 
@@ -59,7 +58,7 @@ class GitManager
      */
     public function findLastCommitMessage(): string
     {
-        if($this->cacheLoader->lastCommitMessageCacheIsValid()) {
+        if ($this->cacheLoader->lastCommitMessageCacheIsValid()) {
             return $this->cacheLoader->getLastCommitMessage();
         }
 
@@ -76,7 +75,7 @@ class GitManager
      */
     public function findLastCommitDetail()
     {
-        if($this->cacheLoader->gitLogsCacheIsValid()) {
+        if ($this->cacheLoader->gitLogsCacheIsValid()) {
             return $this->cacheLoader->getLastCommitDetail();
         }
 
@@ -93,7 +92,7 @@ class GitManager
      */
     public function findLogs()
     {
-        if($this->cacheLoader->gitLogsCacheIsValid()) {
+        if ($this->cacheLoader->gitLogsCacheIsValid()) {
             return $this->cacheLoader->getLogsFromCache();
         }
 
@@ -110,7 +109,7 @@ class GitManager
      */
     public function findUrlRepository()
     {
-        if($this->cacheLoader->gitUrlCacheIsValid()) {
+        if ($this->cacheLoader->gitUrlCacheIsValid()) {
             return $this->cacheLoader->getUrlFromCache();
         }
 

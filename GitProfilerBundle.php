@@ -3,7 +3,6 @@
 
 namespace Eniams\Bundle\GitProfilerBundle;
 
-
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -13,5 +12,4 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class GitProfilerBundle extends Bundle
 {
-
 }

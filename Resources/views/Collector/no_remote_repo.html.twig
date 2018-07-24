@@ -1,0 +1,19 @@
+<h2>{{ collector.urlRepository }}</h2>
+<h2>Git Informations</h2>
+<table>
+    <tr>
+        <th>Sha</th>
+        <th>Author</th>
+        <th>Email</th>
+        <th>Date</th>
+    </tr>
+
+    {% for log in collector.logs %}
+        <tr>
+            <td>{{ log.sha }}</td>
+            <td>{{ log.author }}</td>
+            <td><a href="mailto:{{ log.email }}">{{ log.email }}</a></td>
+            <td>{{ log.date }}</td>
+        </tr>
+    {% endfor %}
+</table>

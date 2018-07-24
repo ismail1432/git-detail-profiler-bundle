@@ -3,22 +3,19 @@
 
 namespace Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache;
 
-
 use Eniams\Bundle\GitProfilerBundle\BranchLoader\GitFilePath;
 use Eniams\Bundle\GitProfilerBundle\BranchLoader\InvalidUrlException;
 use Psr\SimpleCache\CacheInterface;
 
-
 /**
  * Class GitCacheLoader Responsible to get and set information in cache
  *
- * @package Eniams\BranchLoader\Cache
+ * @package Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache
  *
  * @author Smaine Milianni <contact@smaine.me>
  */
 class GitCacheLoader
 {
-
     private $cache;
     private $headFile;
     private $commitEditMessage;
@@ -72,6 +69,10 @@ class GitCacheLoader
      */
     public function lastCommitMessageCacheIsValid(): bool
     {
+        if (!file_exists($this->commitEditMessage)) {
+            return false;
+        }
+
         return $this->cache->has('git.time_last_commit_message') ? $this->cache->get('git.time_last_commit_message') === filemtime($this->commitEditMessage) : false;
     }
 
@@ -81,7 +82,6 @@ class GitCacheLoader
     public function getLastCommitMessage(): ?string
     {
         return $this->cache->get('git.last_commit_message');
-
     }
 
     /**
@@ -89,8 +89,10 @@ class GitCacheLoader
      */
     public function setLastCommitMessageInCache(string $message): void
     {
-        $this->cache->set('git.time_last_commit_message', filemtime($this->commitEditMessage));
-        $this->cache->set('git.last_commit_message', $message);
+        if (file_exists($this->commitEditMessage)) {
+            $this->cache->set('git.time_last_commit_message', filemtime($this->commitEditMessage));
+            $this->cache->set('git.last_commit_message', $message);
+        }
     }
 
     /**
@@ -99,7 +101,6 @@ class GitCacheLoader
     public function getLastCommitDetail(): ?array
     {
         return $this->cache->get('git.last_commit_detail');
-
     }
 
     /**
@@ -107,8 +108,10 @@ class GitCacheLoader
      */
     public function setLastCommitDetailInCache($details): void
     {
-        $this->cache->set('git.time_last_commit_detail', filemtime($this->gitLogFile));
-        $this->cache->set('git.last_commit_detail', $details);
+        if (file_exists($this->gitLogFile)) {
+            $this->cache->set('git.time_last_commit_detail', filemtime($this->gitLogFile));
+            $this->cache->set('git.last_commit_detail', $details);
+        }
     }
 
     /**
@@ -116,8 +119,10 @@ class GitCacheLoader
      */
     public function setLogsInCache($logs): void
     {
-        $this->cache->set('git.time_logs', filemtime($this->gitLogFile));
-        $this->cache->set('git.logs', $logs);
+        if (file_exists($this->gitLogFile)) {
+            $this->cache->set('git.time_logs', filemtime($this->gitLogFile));
+            $this->cache->set('git.logs', $logs);
+        }
     }
 
     /**
@@ -133,16 +138,22 @@ class GitCacheLoader
      */
     public function gitLogsCacheIsValid(): bool
     {
+        if (!file_exists($this->gitLogFile)) {
+            return false;
+        }
+
         return $this->cache->has('git.time_logs') ? $this->cache->get('git.time_logs') === filemtime($this->gitLogFile) : false;
     }
 
     /**
      * @param string $url
      */
-    public function setUrlInCache(string $url): bool
+    public function setUrlInCache(string $url): void
     {
-        $this->cache->set('git.time_url_repository', filemtime($this->configFile));
-        $this->cache->set('git.url_repository', $url);
+        if (!file_exists($this->configFile)) {
+            $this->cache->set('git.time_url_repository', filemtime($this->configFile));
+            $this->cache->set('git.url_repository', $url);
+        }
     }
 
     /**
@@ -150,6 +161,10 @@ class GitCacheLoader
      */
     public function gitUrlCacheIsValid(): bool
     {
+        if (!file_exists($this->configFile)) {
+            return false;
+        }
+
         return $this->cache->has('git.time_url_repository') ? $this->cache->get('git.time_url_repository') === filemtime($this->configFile) : false;
     }
 

@@ -1,17 +1,18 @@
 <?php
 
 
-namespace Eniams\Bundle\DataCollector;
+namespace Eniams\Bundle\GitProfilerBundle\DataCollector;
 
-
-use Eniams\BranchLoader\Manager\GitManager;
 use Eniams\Bundle\GitProfilerBundle\BranchLoader\Cache\GitCacheLoader;
+use Eniams\Bundle\GitProfilerBundle\BranchLoader\GitLoader;
+use Eniams\Bundle\GitProfilerBundle\BranchLoader\Manager\GitManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
 class GitDataCollector extends DataCollector
 {
+    const BaseTemplate = '@GitProfiler/Collector/';
     private $gitLoader;
     private $gitManager;
 
@@ -23,7 +24,7 @@ class GitDataCollector extends DataCollector
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        // We add tht git informations in the data
+        // We add the git informations in the data
         $this->data = [
             'git_branch' => $this->gitManager->findCurrentBranch(),
             'last_commit_message' => $this->gitManager->findLastCommitMessage(),
@@ -56,12 +57,12 @@ class GitDataCollector extends DataCollector
 
     public function getLastCommitAuthor()
     {
-        return $this->data['last_commit_details']['author'];
+        return $this->data['last_commit_details']['author'] ?? GitLoader::NO_COMMIT;
     }
 
     public function getLastCommitDate()
     {
-        return $this->data['last_commit_details']['date'];
+        return $this->data['last_commit_details']['date'] ?? GitLoader::NO_COMMIT;
     }
 
     public function getLogs()
@@ -72,5 +73,12 @@ class GitDataCollector extends DataCollector
     public function getUrlRepository()
     {
         return $this->data['url_repository'];
+    }
+
+    public function getRemoteTemplate()
+    {
+        $template = GitLoader::NO_REMOTE_REPO === $this->data['url_repository'] ? 'no_remote_repo' : 'remote_repo';
+
+        return self::BaseTemplate."/$template.html.twig";
     }
 }
