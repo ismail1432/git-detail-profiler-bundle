@@ -1,4 +1,4 @@
-langage: php
+language: php
 php: 
    - '7.1.3'
 
