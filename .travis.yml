@@ -1,0 +1,8 @@
+langage: php
+php: '7.1.3'
+
+script:
+   - cp phpunit.xml.dist phpunit.xml
+   - composer install
+   - vendor/bin/phpunit
+
