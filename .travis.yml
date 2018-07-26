@@ -1,5 +1,6 @@
 langage: php
-php: '7.1.3'
+php: 
+   - '7.1.3'
 
 script:
    - cp phpunit.xml.dist phpunit.xml
